@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title></title>
+    </head>
+    <body>
+        
+        {% for post in posts %}
+        <h1>{{ post.title }}</h1>
+        <h2>{{ post.text | truncatewords:10 }}</h2>
+        {% endfor %}
+        
+    </body>
+</html>
