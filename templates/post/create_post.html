@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+
+{% block title %}Создать пост — Django Blog{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .create-post {
+            width: min(760px, 100%);
+            margin: 0 auto;
+        }
+
+        .create-post__header {
+            margin-bottom: 28px;
+        }
+
+        .create-post__title {
+            margin: 0 0 8px;
+            font-size: clamp(2rem, 5vw, 3.25rem);
+            line-height: 1.1;
+            letter-spacing: -0.04em;
+        }
+
+        .create-post__description {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .post-form {
+            padding: clamp(24px, 5vw, 40px);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .form-field {
+            margin-bottom: 24px;
+        }
+
+        .form-field:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .form-field label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 750;
+        }
+
+        .form-field input:not([type="checkbox"]):not([type="radio"]),
+        .form-field textarea,
+        .form-field select {
+            width: 100%;
+            min-height: 46px;
+            padding: 11px 13px;
+            color: var(--text);
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font: inherit;
+            outline: none;
+        }
+
+        .form-field textarea {
+            min-height: 180px;
+            resize: vertical;
+        }
+
+        .form-field select[multiple] {
+            min-height: 130px;
+        }
+
+        .form-field input:focus,
+        .form-field textarea:focus,
+        .form-field select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(49, 87, 213, 0.14);
+        }
+
+        .form-field input[type="checkbox"],
+        .form-field input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        .form-field__help {
+            margin: 7px 0 0;
+            color: var(--muted);
+            font-size: 0.875rem;
+        }
+
+        .form-errors,
+        .form-field__errors {
+            padding: 12px 14px;
+            margin: 0 0 20px;
+            color: #991b1b;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+        }
+
+        .form-field__errors {
+            margin: 8px 0 0;
+            font-size: 0.9rem;
+        }
+
+        .form-errors ul,
+        .form-field__errors ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-top: 28px;
+            margin-top: 28px;
+            border-top: 1px solid var(--border);
+        }
+
+        .button {
+            min-height: 46px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            border: 0;
+            border-radius: 10px;
+            font: inherit;
+            font-weight: 750;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .button--primary {
+            color: #ffffff;
+            background: var(--primary);
+        }
+
+        .button--primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .button--secondary {
+            color: var(--text);
+            background: #eef2f7;
+        }
+
+        .button--secondary:hover {
+            background: #e2e8f0;
+        }
+
+        @media (max-width: 520px) {
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .button {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <section class="create-post">
+        <header class="create-post__header">
+            <h1 class="create-post__title">Создать пост</h1>
+            <p class="create-post__description">Заполните поля и сохраните новую публикацию.</p>
+        </header>
+
+        <form class="post-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="form-errors" role="alert">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="form-field">
+                <label for="id_title">Заголовок</label>
+                <input
+                    id="id_title"
+                    type="text"
+                    name="title"
+                    maxlength="255"
+                    value="{{ form.title.value|default_if_none:'' }}"
+                    placeholder="Введите заголовок поста"
+                    required
+                >
+
+                {% if form.title.errors %}
+                    <div class="form-field__errors" role="alert">
+                        {{ form.title.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-field">
+                <label for="id_text">Текст поста</label>
+                <textarea
+                    id="id_text"
+                    name="text"
+                    placeholder="Напишите текст поста"
+                    required
+                >{{ form.text.value|default_if_none:'' }}</textarea>
+
+                {% if form.text.errors %}
+                    <div class="form-field__errors" role="alert">
+                        {{ form.text.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-field">
+                <label for="id_category">Категория</label>
+                <select id="id_category" name="category">
+                    <option value="">Без категории</option>
+                    {% for category in categories %}
+                        <option
+                            value="{{ category.pk }}"
+                            {% if form.category.value|stringformat:"s" == category.pk|stringformat:"s" %}selected{% endif %}
+                        >
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="id_tags">Теги</label>
+                <select id="id_tags" name="tags" multiple>
+                    {% for tag in tags %}
+                        {% with tag_id=tag.pk|stringformat:"s" %}
+                            <option
+                                value="{{ tag.pk }}"
+                                {% if tag_id in form.tags.value %}selected{% endif %}
+                            >
+                                {{ tag.name }}
+                            </option>
+                        {% endwith %}
+                    {% endfor %}
+                </select>
+                <p class="form-field__help">
+                    Можно выбрать несколько тегов, удерживая Command на macOS или Ctrl на Windows.
+                </p>
+            </div>
+
+            <div class="form-field">
+                <label for="id_image">Изображение</label>
+                <input
+                    id="id_image"
+                    type="file"
+                    name="image"
+                    accept="image/*"
+                >
+                <p class="form-field__help">Необязательное поле.</p>
+
+                {% if form.image.errors %}
+                    <div class="form-field__errors" role="alert">
+                        {{ form.image.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-actions">
+                <button class="button button--primary" type="submit">Создать пост</button>
+                <a class="button button--secondary" href="{% url 'post_list' %}">Отмена</a>
+            </div>
+        </form>
+    </section>
+{% endblock %}
