@@ -243,6 +243,25 @@
             border-radius: var(--radius);
         }
 
+        .search-results-summary {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px 14px;
+            margin: -16px 0 28px;
+            color: var(--muted);
+        }
+
+        .search-results-summary a {
+            color: var(--primary);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .search-results-summary a:hover {
+            color: var(--primary-dark);
+        }
+
         .site-footer {
             padding: 24px 0;
             color: #cbd5e1;
@@ -295,15 +314,22 @@
                 <a href="/">Посты</a>
                 <a class="create-post-link" href="{% url 'create_post' %}">Создать пост</a>
 
-                <div class="search-form" role="search">
+                <form
+                    class="search-form"
+                    action="{% url 'post_list' %}"
+                    method="get"
+                    role="search"
+                >
                     <input
                         class="search-form__input"
                         type="search"
+                        name="search"
+                        value="{{ request.GET.search|default:'' }}"
                         placeholder="Поиск по постам"
                         aria-label="Поиск по постам"
                     >
-                    <button class="search-form__button" type="button">Найти</button>
-                </div>
+                    <button class="search-form__button" type="submit">Найти</button>
+                </form>
             </nav>
         </div>
     </header>

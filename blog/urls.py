@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
-from posts.views import hello_world, my_name, say_name, post_list, post_detail, create_post
+from posts.views import hello_world, my_name, say_name, post_list, post_detail, create_post, delete_post
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,7 +27,8 @@ urlpatterns = [
     path("name/<str:name>", say_name),
     path("", post_list, name='post_list'),
     path('post/<int:pk>/', post_detail, name='post_detail'),
-    path('post/create/', create_post, name='create_post')
+    path('post/create/', create_post, name='create_post'),
+    path('post/<int:pk>/delete',delete_post, name='delete_post' )
 ]
 
 if settings.DEBUG:

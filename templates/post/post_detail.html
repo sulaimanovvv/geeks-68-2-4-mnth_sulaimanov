@@ -9,10 +9,17 @@
             margin: 0 auto;
         }
 
+        .post-detail__toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
         .back-link {
             display: inline-flex;
             align-items: center;
-            margin-bottom: 28px;
             color: var(--primary);
             font-weight: 700;
             text-decoration: none;
@@ -20,6 +27,26 @@
 
         .back-link:hover {
             color: var(--primary-dark);
+        }
+
+        .delete-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 0 15px;
+            color: #b42318;
+            background: #fff5f5;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            font-weight: 750;
+            text-decoration: none;
+        }
+
+        .delete-link:hover {
+            color: #ffffff;
+            background: #b42318;
+            border-color: #b42318;
         }
 
         .post-detail__article {
@@ -140,8 +167,15 @@
         }
 
         @media (max-width: 700px) {
-            .back-link {
+            .post-detail__toolbar {
+                align-items: stretch;
+                flex-direction: column;
                 margin-bottom: 20px;
+            }
+
+            .back-link,
+            .delete-link {
+                justify-content: center;
             }
 
             .post-detail__text {
@@ -153,7 +187,10 @@
 
 {% block content %}
     <div class="post-detail">
-        <a class="back-link" href="{% url 'post_list' %}">← Все посты</a>
+        <div class="post-detail__toolbar">
+            <a class="back-link" href="{% url 'post_list' %}">← Все посты</a>
+            <a class="delete-link" href="{% url 'delete_post' post.pk %}">Удалить пост</a>
+        </div>
 
         <article class="post-detail__article">
             {% if post.image %}

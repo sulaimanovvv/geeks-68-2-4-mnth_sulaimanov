@@ -3,7 +3,7 @@ from django.http.response import HttpResponse
 from django.http.request import HttpRequest
 from .models import Post, Tag, Category
 from .forms import PostForm
-
+from django.db.models import Q
 
 def hello_world(request):
     return HttpResponse("<h1>Hello world!</h1>")
@@ -16,9 +16,16 @@ def say_name(request, name):
     return HttpResponse(f"<h2> Hello </h2> <h1>{name}</h1>")
 
 
-def post_list(request):
-    posts = Post.objects.filter(is_published=True)
+def post_list(request: HttpResponse):
+    qp = request.GET
+    posts = Post.objects.filter(is_published=True).order_by('id')
 
+    if search := qp.get('search'):
+        title = Q(title__icontains=search)
+        text = Q(text__icontains=search)
+        posts = posts.filter(title | text)
+    
+    posts = posts[0:5]
     return render(request, "list_posts.html", {"posts": posts})
 
 
@@ -51,3 +58,17 @@ def create_post(request: HttpRequest) -> HttpResponse:
         'tags': tags,
         'categories': category,
     })
+
+
+
+def delete_post(request: HttpRequest, pk: int) -> HttpResponse:
+    post = get_object_or_404(Post, id=pk)
+    
+    if request.method.lower() == 'post':
+        post.delete()
+        
+        return redirect('post_list')
+    
+    return render(request, 'post/delete_post.html', context={'post': post})
+
+

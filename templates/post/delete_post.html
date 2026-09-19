@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Удаление поста — Django Blog{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .delete-confirmation {
+            width: min(620px, 100%);
+            margin: 48px auto 0;
+            padding: clamp(24px, 5vw, 40px);
+            background: var(--surface);
+            border: 1px solid #fecaca;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .delete-confirmation__label {
+            display: inline-block;
+            padding: 5px 10px;
+            margin-bottom: 18px;
+            color: #991b1b;
+            background: #fee2e2;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 800;
+        }
+
+        .delete-confirmation__title {
+            margin: 0 0 14px;
+            font-size: clamp(1.8rem, 5vw, 2.6rem);
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+        }
+
+        .delete-confirmation__text {
+            margin: 0;
+            color: var(--muted);
+            font-size: 1.05rem;
+        }
+
+        .delete-confirmation__post {
+            padding: 16px;
+            margin: 24px 0 0;
+            color: var(--text);
+            background: var(--page-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-weight: 750;
+            overflow-wrap: anywhere;
+        }
+
+        .delete-confirmation__actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-top: 28px;
+            margin-top: 28px;
+            border-top: 1px solid var(--border);
+        }
+
+        .delete-button,
+        .cancel-button {
+            min-height: 46px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            border: 0;
+            border-radius: 10px;
+            font: inherit;
+            font-weight: 750;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .delete-button {
+            color: #ffffff;
+            background: #b42318;
+        }
+
+        .delete-button:hover {
+            background: #912018;
+        }
+
+        .cancel-button {
+            color: var(--text);
+            background: #eef2f7;
+        }
+
+        .cancel-button:hover {
+            background: #e2e8f0;
+        }
+
+        @media (max-width: 520px) {
+            .delete-confirmation {
+                margin-top: 16px;
+            }
+
+            .delete-confirmation__actions {
+                flex-direction: column;
+            }
+
+            .delete-button,
+            .cancel-button {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <section class="delete-confirmation" aria-labelledby="delete-title">
+        <span class="delete-confirmation__label">Опасное действие</span>
+
+        <h1 class="delete-confirmation__title" id="delete-title">
+            Удалить пост?
+        </h1>
+
+        <p class="delete-confirmation__text">
+            Пост и связанные с ним комментарии будут удалены без возможности восстановления.
+        </p>
+
+        <p class="delete-confirmation__post">{{ post.title }}</p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="delete-confirmation__actions">
+                <button class="delete-button" type="submit">Да, удалить</button>
+                <a class="cancel-button" href="{% url 'post_detail' post.pk %}">Отмена</a>
+            </div>
+        </form>
+    </section>
+{% endblock %}
