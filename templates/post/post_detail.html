@@ -29,6 +29,32 @@
             color: var(--primary-dark);
         }
 
+        .post-detail__actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .edit-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 0 15px;
+            color: var(--primary);
+            background: var(--tag-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-weight: 750;
+            text-decoration: none;
+        }
+
+        .edit-link:hover {
+            color: #ffffff;
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
         .delete-link {
             display: inline-flex;
             align-items: center;
@@ -174,8 +200,13 @@
             }
 
             .back-link,
+            .edit-link,
             .delete-link {
                 justify-content: center;
+            }
+
+            .post-detail__actions > a {
+                flex: 1;
             }
 
             .post-detail__text {
@@ -189,7 +220,12 @@
     <div class="post-detail">
         <div class="post-detail__toolbar">
             <a class="back-link" href="{% url 'post_list' %}">← Все посты</a>
-            <a class="delete-link" href="{% url 'delete_post' post.pk %}">Удалить пост</a>
+            {% if request.user.is_authenticated and request.user.id == post.user_id %}
+                <div class="post-detail__actions">
+                    <a class="edit-link" href="{% url 'post_edit' post.pk %}">Редактировать</a>
+                    <a class="delete-link" href="{% url 'delete_post' post.pk %}">Удалить пост</a>
+                </div>
+            {% endif %}
         </div>
 
         <article class="post-detail__article">

@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Вход — Django Blog{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .login-card {
+            width: min(460px, 100%);
+            margin: 24px auto;
+            padding: clamp(24px, 5vw, 40px);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .login-card__title {
+            margin: 0 0 8px;
+            font-size: clamp(2rem, 5vw, 2.5rem);
+            line-height: 1.15;
+        }
+
+        .login-card__intro {
+            margin: 0 0 28px;
+            color: var(--muted);
+        }
+
+        .login-field {
+            margin-bottom: 20px;
+        }
+
+        .login-field label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .login-field input {
+            width: 100%;
+            min-height: 46px;
+            padding: 10px 12px;
+            color: var(--text);
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font: inherit;
+        }
+
+        .login-field input:focus {
+            border-color: var(--primary);
+            outline: 3px solid rgba(49, 87, 213, 0.16);
+        }
+
+        .login-error {
+            padding: 12px 14px;
+            margin: 0 0 20px;
+            color: #991b1b;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+        }
+
+        .login-error ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .login-field__errors {
+            margin: 8px 0 0;
+            color: #991b1b;
+            font-size: 0.9rem;
+        }
+
+        .login-button {
+            width: 100%;
+            min-height: 46px;
+            color: #ffffff;
+            background: var(--primary);
+            border: 0;
+            border-radius: 10px;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .login-button:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <section class="login-card" aria-labelledby="login-title">
+        <h1 class="login-card__title" id="login-title">Вход</h1>
+        <p class="login-card__intro">Введите имя пользователя и пароль.</p>
+
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="login-error" role="alert">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="login-field">
+                <label for="{{ form.username.id_for_label }}">Имя пользователя</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="login-field__errors" role="alert">{{ form.username.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="login-field">
+                <label for="{{ form.password.id_for_label }}">Пароль</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <div class="login-field__errors" role="alert">{{ form.password.errors }}</div>
+                {% endif %}
+            </div>
+
+            {% if next %}
+                <input type="hidden" name="next" value="{{ next }}">
+            {% endif %}
+
+            <button class="login-button" type="submit">Войти</button>
+        </form>
+    </section>
+{% endblock %}

@@ -21,3 +21,6 @@ class PostForm(forms.ModelForm):
                 )
 
         return title
+    
+    
+

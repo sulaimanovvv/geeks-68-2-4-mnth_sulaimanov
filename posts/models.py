@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Category(models.Model):
@@ -23,6 +24,11 @@ class Post(models.Model):
     tags = models.ManyToManyField(Tag)
     image = models.ImageField(null=True, upload_to='posts', blank=True)
     views = models.IntegerField(default=0)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
     
 
 

@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Регистрация — Django Blog{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .register-card {
+            width: min(500px, 100%);
+            margin: 24px auto;
+            padding: clamp(24px, 5vw, 40px);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .register-card__title {
+            margin: 0 0 8px;
+            font-size: clamp(2rem, 5vw, 2.5rem);
+            line-height: 1.15;
+        }
+
+        .register-card__intro {
+            margin: 0 0 28px;
+            color: var(--muted);
+        }
+
+        .register-field {
+            margin-bottom: 20px;
+        }
+
+        .register-field label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .register-field input {
+            width: 100%;
+            min-height: 46px;
+            padding: 10px 12px;
+            color: var(--text);
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font: inherit;
+        }
+
+        .register-field input:focus {
+            border-color: var(--primary);
+            outline: 3px solid rgba(49, 87, 213, 0.16);
+        }
+
+        .register-field__help {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 0.875rem;
+        }
+
+        .register-field__help ul {
+            margin: 8px 0 0;
+            padding-left: 20px;
+        }
+
+        .register-error {
+            padding: 12px 14px;
+            margin: 0 0 20px;
+            color: #991b1b;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+        }
+
+        .register-error ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .register-field__errors {
+            margin: 8px 0 0;
+            color: #991b1b;
+            font-size: 0.9rem;
+        }
+
+        .register-button {
+            width: 100%;
+            min-height: 46px;
+            color: #ffffff;
+            background: var(--primary);
+            border: 0;
+            border-radius: 10px;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .register-button:hover {
+            background: var(--primary-dark);
+        }
+
+        .register-card__login {
+            margin: 20px 0 0;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .register-card__login a {
+            color: var(--primary);
+            font-weight: 700;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <section class="register-card" aria-labelledby="register-title">
+        <h1 class="register-card__title" id="register-title">Регистрация</h1>
+        <p class="register-card__intro">Создайте учётную запись для сайта.</p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="register-error" role="alert">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="register-field">
+                <label for="{{ form.username.id_for_label }}">Имя пользователя</label>
+                {{ form.username }}
+                {% if form.username.help_text %}
+                    <div class="register-field__help">{{ form.username.help_text }}</div>
+                {% endif %}
+                {% if form.username.errors %}
+                    <div class="register-field__errors" role="alert">{{ form.username.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="register-field">
+                <label for="{{ form.password1.id_for_label }}">Пароль</label>
+                {{ form.password1 }}
+                {% if form.password1.help_text %}
+                    <div class="register-field__help">{{ form.password1.help_text }}</div>
+                {% endif %}
+                {% if form.password1.errors %}
+                    <div class="register-field__errors" role="alert">{{ form.password1.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="register-field">
+                <label for="{{ form.password2.id_for_label }}">Повторите пароль</label>
+                {{ form.password2 }}
+                {% if form.password2.help_text %}
+                    <div class="register-field__help">{{ form.password2.help_text }}</div>
+                {% endif %}
+                {% if form.password2.errors %}
+                    <div class="register-field__errors" role="alert">{{ form.password2.errors }}</div>
+                {% endif %}
+            </div>
+
+            <button class="register-button" type="submit">Зарегистрироваться</button>
+        </form>
+
+        <p class="register-card__login">
+            Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a>
+        </p>
+    </section>
+{% endblock %}

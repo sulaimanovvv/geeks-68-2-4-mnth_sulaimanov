@@ -3,15 +3,17 @@
 {% block title %}Посты — Django Blog{% endblock %}
 
 {% block content %}
-    {% if request.GET.search %}
-        <h1 class="page-heading">Результаты поиска</h1>
-        <p class="search-results-summary">
-            По запросу «{{ request.GET.search }}»
-            <a href="{% url 'post_list' %}">Сбросить поиск</a>
-        </p>
-    {% else %}
-        <h1 class="page-heading">Последние посты</h1>
-    {% endif %}
+    {% block posts_heading %}
+        {% if request.GET.search %}
+            <h1 class="page-heading">Результаты поиска</h1>
+            <p class="search-results-summary">
+                По запросу «{{ request.GET.search }}»
+                <a href="{% url 'post_list' %}">Сбросить поиск</a>
+            </p>
+        {% else %}
+            <h1 class="page-heading">Последние посты</h1>
+        {% endif %}
+    {% endblock %}
 
     {% if posts %}
         <section class="posts-grid" aria-label="Список постов">
@@ -52,11 +54,13 @@
         </section>
     {% else %}
         <div class="empty-state">
-            {% if request.GET.search %}
-                По запросу «{{ request.GET.search }}» ничего не найдено.
-            {% else %}
-                Пока нет опубликованных постов.
-            {% endif %}
+            {% block posts_empty %}
+                {% if request.GET.search %}
+                    По запросу «{{ request.GET.search }}» ничего не найдено.
+                {% else %}
+                    Пока нет опубликованных постов.
+                {% endif %}
+            {% endblock %}
         </div>
     {% endif %}
 {% endblock %}
