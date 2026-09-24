@@ -19,22 +19,32 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
-from posts.views import hello_world, my_name, say_name, post_list, my_posts, post_detail, create_post, delete_post, edit_post
+from posts.views import (
+    HelloWorldView,
+    MyNameView,
+    SayNameView,
+    PostListView,
+    MyPostView,
+    PostDetailView,
+    PostCreateView,
+    PostUpdateView,
+    PostDeleteView,
+)
 from user.views import register
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("hello/", hello_world),
-    path("name/", my_name),
-    path("name/<str:name>", say_name),
-    path("", post_list, name='post_list'),
-    path('my-posts/', my_posts, name='my_posts'),
-    path('post/<int:pk>/', post_detail, name='post_detail'),
-    path('post/create/', create_post, name='create_post'),
-    path('post/<int:pk>/delete',delete_post, name='delete_post' ),
-    path('post/<int:pk>/edit/', edit_post, name='post_edit'),
+    path('hello/', HelloWorldView.as_view()),
+    path('name/', MyNameView.as_view()),
+    path('name/<str:name>', SayNameView.as_view()),
+    path('', PostListView.as_view(), name='post_list'),
+    path('my-posts/', MyPostView.as_view(), name='my_posts'),
+    path('post/create/', PostCreateView.as_view(), name='create_post'),
+    path('post/<int:pk>/', PostDetailView.as_view(), name='post_detail'),
+    path('post/<int:pk>/edit/', PostUpdateView.as_view(), name='post_edit'),
+    path('post/<int:pk>/delete', PostDeleteView.as_view(), name='delete_post'),
     path('accounts/register', register, name='register'),
-    path('accounts/', include("django.contrib.auth.urls")),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
 
 if settings.DEBUG:
